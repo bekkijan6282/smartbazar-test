@@ -11,7 +11,9 @@ class UpdateMerchantRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+//        update data only for owners
+
+        return $this->route('merchant')->id === auth()->id();
     }
 
     /**

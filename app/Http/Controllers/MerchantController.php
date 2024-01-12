@@ -12,10 +12,15 @@ use Illuminate\Http\Request;
 
 class MerchantController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('access.merchant', ['only' => ['show', 'destroy']]);
+    }
+
     public function index(Request $request): JsonResponse
     {
         $role = Role::where('name', 'merchant')->first();
-        $merchants = User::where('role_id', $role->id)->filter($request)->with('role')->get();
+        $merchants = User::where('role_id', $role->id)->where('id', auth()->id())->filter($request)->with('role')->get();
 
         return response()->json([
             'data' => $merchants,

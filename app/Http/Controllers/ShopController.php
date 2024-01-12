@@ -10,6 +10,11 @@ use Illuminate\Http\Request;
 
 class ShopController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('access.shop', ['only' => ['show', 'destroy']]);
+    }
+
     public function index(Request $request): JsonResponse
     {
         $shops = Shop::filter($request)->get();

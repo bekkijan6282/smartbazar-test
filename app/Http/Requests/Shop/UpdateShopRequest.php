@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Shop;
 
+use App\Models\Shop;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateShopRequest extends FormRequest
@@ -11,7 +12,11 @@ class UpdateShopRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+//        allow shop owner edit shop details
+
+        $shopId = $this->route('shop')->id;
+        $shop = Shop::find($shopId);
+        return $shop->merchant_id === auth()->id();
     }
 
     /**

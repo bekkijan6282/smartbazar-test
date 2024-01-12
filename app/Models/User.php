@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\Request;
@@ -54,6 +55,11 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class, 'role_id', 'id');
     }
 
+    public function shops(): HasMany
+    {
+        return $this->hasMany(Shop::class,'merchant_id', 'id');
+    }
+
     public function scopeFilter(Builder $builder, Request $request)
     {
         return $builder->when($request->search, function (Builder $query, string $search) {
@@ -62,6 +68,8 @@ class User extends Authenticatable
             $query->where('status', '=', $status);
         })->when($request->registered_at, function (Builder $query, $registered_at) {
             $query->whereDate('registered_at', $registered_at);
+        })->when($request->withShops, function (Builder $query) {
+            $query->with('shops');
         });
     }
 }
