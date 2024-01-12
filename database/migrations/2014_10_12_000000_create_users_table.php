@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('role_id')->nullable();
             $table->string('full_name');
             $table->string('email')->unique();
-            $table->enum('status', ['active', 'notactive', 'blocked']);
+            $table->enum('status', ['active', 'notactive', 'blocked'])->default('active');
             $table->timestamp('registered_at')->nullable();
             $table->string('password');
             $table->rememberToken();

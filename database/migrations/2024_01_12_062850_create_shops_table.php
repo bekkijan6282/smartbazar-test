@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('shops', function (Blueprint $table) {
             $table->id();
-            $table->foreign('merchant_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('merchant_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('address');
             $table->string('schedule');
             $table->decimal('latitude');

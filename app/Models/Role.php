@@ -14,4 +14,9 @@ class Role extends Model
         ['name' => 'admin', 'display_name' => 'Admin'],
         ['name' => 'merchant', 'display_name' => 'Merchant'],
     ];
+
+    protected $fillable = [
+        'name',
+        'display_name',
+    ];
 }
