@@ -17,7 +17,7 @@ class ShopController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $shops = Shop::filter($request)->get();
+        $shops = Shop::filter($request)->where('merchat_id', auth()->id())->get();
 
         return response()->json([
             'data' => $shops,
