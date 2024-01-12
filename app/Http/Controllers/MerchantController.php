@@ -6,6 +6,7 @@ use App\Http\Requests\Merchant\MerchantRequest;
 use App\Http\Requests\Merchant\UpdateMerchantRequest;
 use App\Models\Role;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,7 @@ class MerchantController extends Controller
     public function index(Request $request): JsonResponse
     {
         $role = Role::where('name', 'merchant')->first();
-        $merchants = User::where('role_id', $role->id)->get();
+        $merchants = User::where('role_id', $role->id)->filter($request)->with('role')->get();
 
         return response()->json([
             'data' => $merchants,
@@ -27,6 +28,7 @@ class MerchantController extends Controller
         $role = Role::where('name', 'merchant')->first();
         $validated['role_id'] = $role->id;
         $validated['password'] = bcrypt('123456789');
+        $validated['registered_at'] = Carbon::now();
         $user = User::create($validated);
 
         return response()->json([
@@ -37,7 +39,7 @@ class MerchantController extends Controller
     public function show(User $merchant): JsonResponse
     {
         return response()->json([
-            'data' => $merchant,
+            'data' => $merchant->load('role'),
         ], JsonResponse::HTTP_OK);
     }
 

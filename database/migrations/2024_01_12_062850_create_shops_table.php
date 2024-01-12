@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('merchant_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('address');
             $table->string('schedule');
-            $table->decimal('latitude');
-            $table->decimal('longitude');
+            $table->decimal('latitude',8,8);
+            $table->decimal('longitude',8,8);
             $table->timestamps();
         });
     }

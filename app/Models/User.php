@@ -3,8 +3,12 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Http\Request;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -44,4 +48,20 @@ class User extends Authenticatable
     protected $casts = [
         'password' => 'hashed',
     ];
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'id');
+    }
+
+    public function scopeFilter(Builder $builder, Request $request)
+    {
+        return $builder->when($request->search, function (Builder $query, string $search) {
+            $query->where('full_name', 'like', '%'.$search.'%')->orWhere('email', 'like','%'.$search.'%');
+        })->when($request->status, function(Builder $query, string $status) {
+            $query->where('status', '=', $status);
+        })->when($request->registered_at, function (Builder $query, $registered_at) {
+            $query->whereDate('registered_at', $registered_at);
+        });
+    }
 }

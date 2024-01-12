@@ -25,4 +25,5 @@ Route::post('login', LoginController::class);
 Route::middleware('auth:sanctum')->group(function() {
     Route::apiResource('merchants', MerchantController::class);
     Route::apiResource('shops', ShopController::class);
+    Route::get('find-nearest-shops', [ShopController::class, 'findNearestShops']);
 });

@@ -54,4 +54,21 @@ class ShopController extends Controller
 
         return response()->json([], JsonResponse::HTTP_NO_CONTENT);
     }
+
+    public function findNearestShops(Request $request): JsonResponse
+    {
+        $latitude = $request->latitude;
+        $longitude = $request->longitude;
+        $shops = Shop::selectRaw('( 6371 * acos( cos( radians(?) ) *
+                               cos( radians( latitude ) )
+                               * cos( radians( longitude ) - radians(?)
+                               ) + sin( radians(?) ) *
+                               sin( radians( latitude ) ) )
+                             ) AS distance, id, merchant_id,address, schedule, latitude, longitude',
+            [$latitude, $longitude,$latitude])->orderBy('distance', 'asc')->take(5)->get();
+
+        return response()->json([
+            'data' => $shops,
+        ]);
+    }
 }
