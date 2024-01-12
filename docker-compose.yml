@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: 'php:8.1-fpm'
+        container_name: smartbazar-app
+        restart: unless-stopped
+        tty: true
+        working_dir: /var/www/smartbazar
+        volumes:
+            - ./:/var/www/smartbazar
+            - ./storage:/var/www/smartbazar/storage
+        networks:
+            - smartbazar-network
+
+    database:
+        image: mysql:5.7.22
+        container_name: smartbazar-db
+        restart: unless-stopped
+        tty: true
+        ports:
+            - "4306:3306"
+        environment:
+            MYSQL_DATABASE: smartbazar_db
+            MYSQL_ROOT_PASSWORD: smartbazar_root_password
+            MYSQL_PASSWORD: smartbazar_password
+            MYSQL_USER: smartbazar_user
+        networks:
+            - smartbazar-network
+
+    webserver:
+        image: nginx:alpine
+        container_name: smartbazar-webserver
+        restart: unless-stopped
+        tty: true
+        ports:
+            - "8008:80"
+        volumes:
+            - ./:/var/www/smartbazar
+            - ./nginx:/etc/nginx/conf.d
+        networks:
+            - smartbazar-network
+
+networks:
+    smartbazar-network:
+        driver: bridge
